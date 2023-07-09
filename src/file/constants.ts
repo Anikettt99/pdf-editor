@@ -1,0 +1,1 @@
+export const FILE_REPOSITORY = 'FILE_REPOSITORY';

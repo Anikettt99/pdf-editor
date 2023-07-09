@@ -1,0 +1,13 @@
+1. Create Table
+
+Run following commands:-
+
+* knex migrate:up 20230708152310_create_table_files.ts
+* knex migrate:up 20230708152248_create_table_pdf_data.ts
+
+2. Populate table with given data 
+
+Run following commands:-
+
+* knex seed:run --specific=default_pdf_file.ts
+* knex seed:run --specific=default_pdf_file_data.ts
