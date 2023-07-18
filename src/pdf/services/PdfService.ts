@@ -8,7 +8,7 @@ import { PDF_DATA_REPOSITORY } from '../constants';
 import { PdfDataContract } from '../repositories';
 import { PdfData } from '../models';
 import { FILE_REPOSITORY } from 'src/file/constants';
-import { FileContract } from 'src/file';
+import { File, FileContract } from 'src/file';
 
 @Injectable()
 export class PdfService {
@@ -33,22 +33,17 @@ export class PdfService {
       throw new UnprocessableEntityException('File is mandatory!');
     }
 
-    const pdfFile = file;
-    let pdfData;
-    const trx = await PdfData.startTransaction();
+    const { name, mimetype, url } = await this.mediaService.uploadFile(file);
 
+    const trx = await PdfData.startTransaction();
     try {
-      const { name, mimetype, url } = await this.mediaService.uploadFile(
-        pdfFile,
-      );
-      const file = await this.file.query(trx).insert({
+      const createdFile = await this.file.query(trx).insert({
         name,
-        mimetype,
+        mime_type: mimetype,
         url,
       });
-
-      pdfData = await this.pdfData.query(trx).insert({
-        file_id: file.id,
+      await this.pdfData.query(trx).insert({
+        file_id: createdFile.id,
         text_1,
         text_2,
         text_3,
@@ -58,22 +53,32 @@ export class PdfService {
         text_6,
         jobtype_2,
       });
-
       await trx.commit();
     } catch (error) {
       await trx.rollback();
       throw new Error('Internal Server Error');
     }
 
-    return pdfData;
+    return;
   }
 
-  async getDefaultPdf() {
+  async getPdf(inputs: Record<string, any>) {
     try {
-      const pdfData = await this.pdfData.getPdfData(1);
+      const pdfData = await this.pdfData.getPdfData(inputs.id);
       return pdfData;
     } catch (error) {
-      console.log(error);
+      throw new Error('Internal Server Error');
+    }
+  }
+
+  async getAllPdfs() {
+    try {
+      const allPdfs = await this.pdfData
+        .query()
+        .withGraphJoined('[fileDetails(defaultSelects)]');
+
+      return allPdfs;
+    } catch (error) {
       throw new Error('Internal Server Error');
     }
   }

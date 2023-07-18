@@ -1,7 +1,7 @@
 import { Model } from 'objection';
 import { KNEX_CONNECTION } from '../constants';
 import Knex from 'knex';
-import * as KnexConfig from '../../../knexfile';
+import { BaseModel } from './BaseModel';
 
 export const databaseProvider = [
   {
@@ -18,19 +18,7 @@ export const databaseProvider = [
         },
       });
 
-      /*
-      const connection = Knex({
-        client: process.env.DB_TYPE || 'mysql2',
-        connection: {
-          host: process.env.DB_HOST,
-          port: +process.env.DB_PORT,
-          user: process.env.DB_USER,
-          password: process.env.DB_PASSWORD,
-          database: process.env.DB_DATABASE,
-        },
-      });
-      */
-      Model.knex(connection);
+      BaseModel.knex(connection);
       return connection;
     },
   },

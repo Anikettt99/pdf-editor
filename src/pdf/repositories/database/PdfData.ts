@@ -6,10 +6,11 @@ import { InjectModel } from 'src/core/helpers';
 
 @Injectable()
 export class PdfDataRepository extends DB implements PdfDataContract {
-  model: PdfData;
   @InjectModel(PdfData)
+  model: PdfData;
+
   async getPdfData(id): Promise<Record<string, any>> {
-    const data = await PdfData.query()
+    const data = await this.query()
       .alias('pd')
       .withGraphJoined('[fileDetails(defaultSelects)]')
       .where('pd.id', id)

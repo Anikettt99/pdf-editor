@@ -22,7 +22,6 @@ export class MediaService {
       const storageRef = ref(this.storage, `files/${name}`);
       const snapshot = await uploadBytesResumable(storageRef, file.buffer);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      console.log(name, file.mimetype, downloadURL);
       return {
         name,
         mimetype: file.mimetype,

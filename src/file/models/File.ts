@@ -1,6 +1,7 @@
 import { Model } from 'objection';
+import { BaseModel } from 'src/core/db/BaseModel';
 
-export class File extends Model {
+export class File extends BaseModel {
   static tableName = 'files';
 
   static modifiers = {
